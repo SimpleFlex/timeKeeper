@@ -239,10 +239,34 @@ const Home = () => {
             <span className="hnav-word">TimeKeeper</span>
           </Link>
           <div className="hnav-links">
-            <button className="hnav-link">Features</button>
-            <button className="hnav-link">How it works</button>
-            <button className="hnav-link">About</button>
-          </div>
+            <button
+              className="hnav-link"
+              onClick={() => {
+                const el = document.getElementById("features");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
+              Features
+            </button>
+            <button
+              className="hnav-link"
+              onClick={() => {
+                const el = document.getElementById("how-it-works");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
+              How it works
+            </button>
+            <button
+              className="hnav-link"
+              onClick={() => {
+                const el = document.getElementById("about");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
+              About
+            </button>
+          </div>{" "}
           <Link to="/register" className="hnav-cta">
             Get started free →
           </Link>
@@ -375,17 +399,10 @@ const Home = () => {
               <div className="hstat-label">Potential unlocked</div>
             </div>
           </div>
-
-          <div className="hscroll">
-            <div className="hscroll-mouse">
-              <div className="hscroll-wheel" />
-            </div>
-            <span>Scroll to explore</span>
-          </div>
         </section>
 
         {/* FEATURES */}
-        <section className="hsection">
+        <section className="hsection" id="features">
           <p className="hsec-label reveal">Why TimeKeeper</p>
           <h2 className="hsec-title reveal">
             Everything you need.
@@ -471,7 +488,7 @@ const Home = () => {
         </section>
 
         {/* WEEK VISUAL */}
-        <section className="hweek">
+        <section className="hweek" id="how-it-works">
           <h2 className="hweek-title reveal">Your week, visualized.</h2>
           <p className="hweek-sub reveal">
             Monday to Sunday. One goal. Seven days.
@@ -521,7 +538,7 @@ const Home = () => {
         </section>
 
         {/* CTA */}
-        <section className="hcta">
+        <section className="hcta" id="about">
           <div className="hcta-box reveal">
             <h2 className="hcta-title">
               This week,

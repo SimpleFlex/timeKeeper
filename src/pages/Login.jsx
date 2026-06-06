@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { supabase } from "../lib/supabase";
 
 const Login = () => {
   const { signIn } = useAuth();
@@ -8,6 +9,7 @@ const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const handle = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -21,291 +23,142 @@ const Login = () => {
     navigate("/dashboard");
   };
 
+  const handleGoogle = async () => {
+    setGoogleLoading(true);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${window.location.origin}/dashboard` },
+    });
+    if (error) {
+      setError(error.message);
+      setGoogleLoading(false);
+    }
+  };
+
   return (
-    <div style={s.page}>
-      <div style={s.blob1} />
-      <div style={s.blob2} />
-      <div style={s.grid} />
+    <>
+      <style>{`
+        .auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#04040c;position:relative;overflow:hidden;padding:1.5rem 1rem}
+        .auth-blob1{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,#00f0d414 0%,transparent 70%);top:-150px;left:-100px;pointer-events:none}
+        .auth-blob2{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,#d4f24412 0%,transparent 70%);bottom:-100px;right:-80px;pointer-events:none}
+        .auth-grid{position:absolute;inset:0;background-image:linear-gradient(#ffffff0e 1px,transparent 1px),linear-gradient(90deg,#ffffff0e 1px,transparent 1px);background-size:60px 60px;opacity:0.3;pointer-events:none}
+        .auth-card{position:relative;z-index:10;background:#13132a;border:1px solid #ffffff12;border-radius:20px;padding:2rem 1.8rem;width:100%;max-width:400px;box-shadow:0 30px 70px #00000070}
+        .auth-top{display:flex;align-items:center;gap:0.8rem;margin-bottom:1.2rem}
+        .auth-logo{width:38px;height:38px;border-radius:10px;background:#d4f244;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#04040c;font-weight:900;box-shadow:0 0 16px #d4f24450;flex-shrink:0}
+        .auth-brand{font-family:'Clash Display',sans-serif;font-weight:700;font-size:1rem;color:#eeeef5}
+        .auth-title{font-family:'Clash Display',sans-serif;font-size:1.5rem;font-weight:800;color:#eeeef5;margin-bottom:0.2rem}
+        .auth-sub{font-size:0.82rem;color:#6060a0;margin-bottom:1.4rem}
+        .auth-error{background:#ff4d6d18;border:1px solid #ff4d6d40;color:#ff8099;border-radius:8px;padding:0.6rem 0.9rem;font-size:0.82rem;margin-bottom:0.9rem}
+        .auth-google-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:0.7rem;background:#ffffff0a;border:1px solid #ffffff18;border-radius:10px;padding:0.7rem;color:#eeeef5;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Cabinet Grotesk',sans-serif;margin-bottom:1rem}
+        .auth-google-btn:hover:not(:disabled){background:#ffffff14;border-color:#ffffff28;transform:translateY(-1px)}
+        .auth-google-btn:disabled{opacity:0.6;cursor:not-allowed}
+        .auth-google-icon{width:18px;height:18px;flex-shrink:0}
+        .auth-divider-row{display:flex;align-items:center;gap:0.8rem;margin-bottom:1rem}
+        .auth-divider-line{flex:1;height:1px;background:#ffffff10}
+        .auth-divider-text{font-size:0.75rem;color:#6060a0;white-space:nowrap}
+        .auth-field{display:flex;flex-direction:column;gap:0.3rem;margin-bottom:0.7rem}
+        .auth-label{font-size:0.74rem;font-weight:700;color:#6060a0;letter-spacing:0.06em;text-transform:uppercase}
+        .auth-input{background:#0e0e20;border:1px solid #ffffff12;border-radius:8px;padding:0.65rem 0.9rem;color:#eeeef5;font-size:0.9rem;outline:none;transition:border-color 0.2s;width:100%;font-family:'Cabinet Grotesk',sans-serif}
+        .auth-input:focus{border-color:#00f0d4}
+        .auth-btn{width:100%;margin-top:0.5rem;background:#d4f244;color:#04040c;border:none;border-radius:10px;padding:0.8rem;font-size:0.92rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:transform 0.2s,box-shadow 0.2s;box-shadow:0 6px 24px #d4f24430;font-family:'Clash Display',sans-serif}
+        .auth-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 36px #d4f24450}
+        .auth-btn:disabled{opacity:0.6;cursor:not-allowed}
+        .auth-footer{text-align:center;margin-top:1.2rem;font-size:0.84rem;color:#6060a0}
+        .auth-footer a{color:#d4f244;font-weight:700;text-decoration:none}
+        @media(max-width:480px){.auth-card{padding:1.6rem 1.3rem}}
+      `}</style>
 
-      <div
-        style={{ ...s.shape, top: "15%", right: "8%", animationDelay: "0s" }}
-      />
-      <div
-        style={{
-          ...s.shape2,
-          bottom: "20%",
-          left: "6%",
-          animationDelay: "1.5s",
-        }}
-      />
-      <div
-        style={{
-          ...s.shape,
-          bottom: "30%",
-          right: "5%",
-          animationDelay: "0.8s",
-          width: 28,
-          height: 28,
-        }}
-      />
+      <div className="auth-page">
+        <div className="auth-blob1" />
+        <div className="auth-blob2" />
+        <div className="auth-grid" />
 
-      <div style={s.card} className="animate-fadeUp">
-        <div style={s.logoWrap} className="animate-fadeUp delay-1">
-          <div style={s.logoRing} />
-          <span style={s.logoIcon}>⏱</span>
-        </div>
-
-        <p style={s.tagline} className="animate-fadeUp delay-2">
-          Welcome back, achiever.
-        </p>
-        <h1 style={s.title} className="animate-fadeUp delay-2">
-          Sign in
-        </h1>
-
-        {error && (
-          <div style={s.errorBox} className="animate-fadeIn">
-            ⚠ {error}
-          </div>
-        )}
-
-        <form onSubmit={submit} style={s.form}>
-          <div style={s.field} className="animate-fadeUp delay-3">
-            <label style={s.label}>Email address</label>
-            <input
-              name="email"
-              type="email"
-              value={form.email}
-              onChange={handle}
-              placeholder="you@example.com"
-              required
-              style={s.input}
-              onFocus={(e) => (e.target.style.borderColor = "var(--lime)")}
-              onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
-            />
+        <div className="auth-card animate-fadeUp">
+          <div className="auth-top">
+            <div className="auth-logo">⏱</div>
+            <span className="auth-brand">TimeKeeper</span>
           </div>
 
-          <div style={s.field} className="animate-fadeUp delay-4">
-            <label style={s.label}>Password</label>
-            <input
-              name="password"
-              type="password"
-              value={form.password}
-              onChange={handle}
-              placeholder="Your password"
-              required
-              style={s.input}
-              onFocus={(e) => (e.target.style.borderColor = "var(--lime)")}
-              onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
-            />
-          </div>
+          <h1 className="auth-title">Welcome back</h1>
+          <p className="auth-sub">Sign in to continue your weekly mission.</p>
+
+          {error && <div className="auth-error">⚠ {error}</div>}
 
           <button
-            type="submit"
-            disabled={loading}
-            style={{ ...s.btn, ...(loading ? s.btnDisabled : {}) }}
-            className="animate-fadeUp delay-5"
-            onMouseEnter={(e) => {
-              if (!loading) e.target.style.transform = "translateY(-2px)";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = "translateY(0)";
-            }}
+            className="auth-google-btn"
+            onClick={handleGoogle}
+            disabled={googleLoading}
           >
-            {loading ? (
+            {googleLoading ? (
               "●●●"
             ) : (
               <>
-                Let's go <span style={s.arrow}>→</span>
+                <svg className="auth-google-icon" viewBox="0 0 24 24">
+                  <path
+                    fill="#4285F4"
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"
+                  />
+                  <path
+                    fill="#EA4335"
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                  />
+                </svg>
+                Continue with Google
               </>
             )}
           </button>
-        </form>
 
-        <p style={s.footer} className="animate-fadeUp delay-5">
-          No account yet?{" "}
-          <Link to="/register" style={s.footerLink}>
-            Create one free
-          </Link>
-        </p>
+          <div className="auth-divider-row">
+            <div className="auth-divider-line" />
+            <span className="auth-divider-text">or sign in with email</span>
+            <div className="auth-divider-line" />
+          </div>
+
+          <form onSubmit={submit}>
+            <div className="auth-field">
+              <label className="auth-label">Email</label>
+              <input
+                className="auth-input"
+                name="email"
+                type="email"
+                value={form.email}
+                onChange={handle}
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+            <div className="auth-field">
+              <label className="auth-label">Password</label>
+              <input
+                className="auth-input"
+                name="password"
+                type="password"
+                value={form.password}
+                onChange={handle}
+                placeholder="Your password"
+                required
+              />
+            </div>
+            <button type="submit" className="auth-btn" disabled={loading}>
+              {loading ? "●●●" : <>Sign in →</>}
+            </button>
+          </form>
+
+          <p className="auth-footer">
+            No account yet? <Link to="/register">Create one free</Link>
+          </p>
+        </div>
       </div>
-    </div>
+    </>
   );
-};
-
-const s = {
-  page: {
-    minHeight: "100vh",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    background: "var(--black)",
-    position: "relative",
-    overflow: "hidden",
-    padding: "2rem 1rem",
-  },
-  blob1: {
-    position: "absolute",
-    width: 500,
-    height: 500,
-    borderRadius: "50%",
-    background: "radial-gradient(circle, #00e5cc14 0%, transparent 70%)",
-    top: "-100px",
-    left: "-100px",
-    pointerEvents: "none",
-  },
-  blob2: {
-    position: "absolute",
-    width: 440,
-    height: 440,
-    borderRadius: "50%",
-    background: "radial-gradient(circle, #c6f13514 0%, transparent 70%)",
-    bottom: "-80px",
-    right: "-60px",
-    pointerEvents: "none",
-  },
-  grid: {
-    position: "absolute",
-    inset: 0,
-    backgroundImage:
-      "linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)",
-    backgroundSize: "60px 60px",
-    opacity: 0.4,
-    pointerEvents: "none",
-  },
-  shape: {
-    position: "absolute",
-    width: 40,
-    height: 40,
-    border: "2px solid #c6f13540",
-    borderRadius: "8px",
-    animation: "float 6s ease-in-out infinite",
-    pointerEvents: "none",
-  },
-  shape2: {
-    position: "absolute",
-    width: 20,
-    height: 20,
-    backgroundColor: "#c6f13520",
-    borderRadius: "50%",
-    animation: "float 9s ease-in-out infinite",
-    pointerEvents: "none",
-  },
-  card: {
-    position: "relative",
-    zIndex: 10,
-    background: "var(--card)",
-    border: "1px solid var(--border)",
-    borderRadius: "24px",
-    padding: "3rem 2.5rem",
-    width: "100%",
-    maxWidth: "420px",
-    boxShadow: "0 40px 80px #00000060, 0 0 0 1px #ffffff08",
-    backdropFilter: "blur(20px)",
-  },
-  logoWrap: {
-    position: "relative",
-    width: 56,
-    height: 56,
-    marginBottom: "1.5rem",
-  },
-  logoRing: {
-    position: "absolute",
-    inset: 0,
-    borderRadius: "50%",
-    border: "2px solid var(--cyan)",
-    animation: "pulse-ring 2s ease-out infinite",
-  },
-  logoIcon: {
-    position: "absolute",
-    inset: 0,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: "1.6rem",
-    background: "var(--surface)",
-    borderRadius: "50%",
-    border: "1px solid var(--border)",
-  },
-  tagline: {
-    fontSize: "0.78rem",
-    color: "var(--cyan)",
-    letterSpacing: "0.12em",
-    textTransform: "uppercase",
-    fontWeight: 600,
-    marginBottom: "0.4rem",
-  },
-  title: {
-    fontSize: "2rem",
-    fontWeight: 800,
-    color: "var(--white)",
-    marginBottom: "2rem",
-    fontFamily: "var(--font-head)",
-  },
-  errorBox: {
-    background: "#ff4d6d18",
-    border: "1px solid #ff4d6d40",
-    color: "#ff8099",
-    borderRadius: "10px",
-    padding: "0.75rem 1rem",
-    fontSize: "0.88rem",
-    marginBottom: "1.2rem",
-  },
-  form: { display: "flex", flexDirection: "column", gap: "0.2rem" },
-  field: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "0.4rem",
-    marginBottom: "0.8rem",
-  },
-  label: {
-    fontSize: "0.82rem",
-    fontWeight: 600,
-    color: "var(--muted)",
-    letterSpacing: "0.04em",
-    textTransform: "uppercase",
-  },
-  input: {
-    background: "var(--surface)",
-    border: "1px solid var(--border)",
-    borderRadius: "10px",
-    padding: "0.85rem 1.1rem",
-    color: "var(--white)",
-    fontSize: "0.95rem",
-    outline: "none",
-    transition: "border-color 0.2s, box-shadow 0.2s",
-    width: "100%",
-  },
-  btn: {
-    marginTop: "0.8rem",
-    background: "var(--lime)",
-    color: "#080810",
-    border: "none",
-    borderRadius: "12px",
-    padding: "1rem",
-    fontSize: "1rem",
-    fontWeight: 700,
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "0.5rem",
-    transition: "transform 0.2s, box-shadow 0.2s",
-    boxShadow: "0 8px 30px #c6f13530",
-    fontFamily: "var(--font-head)",
-    letterSpacing: "0.02em",
-  },
-  btnDisabled: { opacity: 0.6, cursor: "not-allowed" },
-  arrow: { fontSize: "1.1rem" },
-  footer: {
-    textAlign: "center",
-    marginTop: "1.8rem",
-    fontSize: "0.9rem",
-    color: "var(--muted)",
-  },
-  footerLink: {
-    color: "var(--lime)",
-    fontWeight: 600,
-  },
 };
 
 export default Login;

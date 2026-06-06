@@ -231,3 +231,124 @@ textarea {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* ── Global Mobile Fixes ── */
+@media (max-width: 768px) {
+  /* Navbar */
+  .hnav {
+    padding: 0 1.2rem !important;
+  }
+  .hnav-links {
+    display: none !important;
+  }
+  .hnav-cta {
+    padding: 0.45rem 1rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* Hero */
+  .hhero {
+    padding: 6rem 1.2rem 3rem !important;
+  }
+  .hhero-actions {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+  .hbtn-primary,
+  .hbtn-secondary {
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+  .hticker-row {
+    gap: 0.5rem !important;
+  }
+  .hstats {
+    gap: 1.5rem !important;
+  }
+  .hstat-div {
+    display: none !important;
+  }
+
+  /* Features */
+  .hfeatures {
+    grid-template-columns: 1fr !important;
+  }
+  .hsection {
+    padding: 4rem 1.2rem !important;
+  }
+
+  /* Week days */
+  .hweek {
+    padding: 0 1.2rem 4rem !important;
+  }
+  .hdays {
+    gap: 0.5rem !important;
+  }
+  .hday {
+    min-width: 90px !important;
+    padding: 0.9rem 0.6rem !important;
+  }
+
+  /* About & CTA */
+  .habout {
+    padding: 0 1.2rem 4rem !important;
+  }
+  .habout-box {
+    padding: 2rem 1.4rem !important;
+  }
+  .hcta {
+    padding: 0 1.2rem 4rem !important;
+  }
+  .hcta-box {
+    padding: 2.5rem 1.4rem !important;
+  }
+  .hcta-actions {
+    flex-direction: column !important;
+  }
+
+  /* Footer */
+  .hfooter {
+    padding: 1.5rem 1.2rem !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.8rem !important;
+  }
+  .hfooter-links {
+    gap: 1rem !important;
+  }
+
+  /* Dashboard stats */
+  .stats-row-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Goals page */
+  .goal-card-top {
+    flex-direction: column !important;
+  }
+  .goal-actions-row {
+    flex-wrap: wrap !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hhero-title {
+    font-size: 2.4rem !important;
+  }
+  .hcta-title {
+    font-size: 1.8rem !important;
+  }
+  .hsec-title {
+    font-size: 1.8rem !important;
+  }
+  .hweek-title {
+    font-size: 1.4rem !important;
+  }
+  .hday {
+    min-width: 75px !important;
+  }
+  .hday-num {
+    font-size: 1.2rem !important;
+  }
+}
