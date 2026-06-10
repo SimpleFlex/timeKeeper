@@ -10,7 +10,7 @@ const Navbar = () => {
 
   const handleSignOut = async () => {
     await signOut();
-    navigate("/login");
+    navigate("/");
     setMenuOpen(false);
   };
 

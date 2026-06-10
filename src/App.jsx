@@ -9,7 +9,7 @@ import TimerPage from "./pages/TimerPage";
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
-  return user ? children : <Navigate to="/login" replace />;
+  return user ? children : <Navigate to="/" replace />;
 };
 
 const PublicRoute = ({ children }) => {
